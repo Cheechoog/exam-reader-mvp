@@ -1,0 +1,37 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model AnswerKey {
+  id             String       @id @default(cuid())
+  title          String
+  totalQuestions Int
+  answersJson    Json
+  createdAt      DateTime     @default(now())
+
+  submissions    Submission[]
+}
+
+model Submission {
+  id               String      @id @default(cuid())
+  answerKeyId      String
+  studentName      String?
+  originalFilename String
+  imagePath        String
+  status           String
+  score            Float?
+  totalCorrect     Int?
+  totalIncorrect   Int?
+  totalBlank       Int?
+  totalMultiple    Int?
+  requiresReview   Boolean     @default(false)
+  detectedAnswers  Json?
+  createdAt        DateTime    @default(now())
+
+  answerKey        AnswerKey   @relation(fields: [answerKeyId], references: [id])
+}
